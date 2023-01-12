@@ -1,0 +1,143 @@
+import javax.swing.*; 
+import java.awt.Font;
+import javax.swing.UIManager;
+
+public class U2Part3Q5IshP 
+{  
+  /**
+   * Boolean to track whether cancel button has been pressed
+   */
+  public static boolean isCancelPressed = false; // class variable to keep track of cancel button press, assume not pressed
+  
+  public static void main(String[] args)  
+  {
+    int[][] checkerBoard = new int[8][8];
+    String outputBoard;
+    int total;
+    
+    //Initialize the dice array to zeros
+    for (int i = 0; i < 8; i++) 
+    {
+      for (int j = 0; j < 8; j++) 
+      {
+        checkerBoard[i][j] = 0;
+      }
+    }
+    
+    printProgramDescription();
+    playMoveCheckers(checkerBoard);
+    total = calculateTotalCheckerOnBoard(checkerBoard);
+    outputBoard = generatesBoardIntoOutputFormat(checkerBoard,total);
+    outputCheckerBoard(outputBoard);
+  }
+  /**
+   * Prints out program description to the user
+   */
+  public static void printProgramDescription()
+  {
+    UIManager.put("OptionPane.messageFont", new Font("Calibri", Font.PLAIN, 16));
+    
+    //Prints Program Description
+    JOptionPane.showMessageDialog(null,"Hello!\nThis program will let you place 4 checker pieces on a board sized 8x8 \n 0 represents an open spot on the board \n 1 represents a checker piece","Place Checkers",JOptionPane.INFORMATION_MESSAGE);
+  }
+  /**
+   * Plays the maze game
+   */
+  public static void playMoveCheckers(int[][] checkerBoard)
+  {
+    String[] rows = {"1", "2", "3", "4", "5", "6", "7", "8"};
+    String[] coloumn = {"1", "2", "3", "4", "5", "6", "7", "8"};
+    String rowsInput;
+    String colInput;
+    int rowsNum;
+    int colNum;
+    int[] postion;
+    
+    if (isCancelPressed==false) //if cancel button not pressed
+    {  
+      for (int i = 0; i < 4; i++)
+      {
+        rowsInput = (String)JOptionPane.showInputDialog(null, "Please enter what row you want your " + (i+1) + " checker to go", "Place Checkers", JOptionPane.PLAIN_MESSAGE, null, rows, rows[0]);
+        
+        if (rowsInput == null)// input was cancel (the user deciding they don't want to complete the maze) (quiting)
+        {
+          isCancelPressed = true;  //set sentinel to indicate cancel button was pressed
+          break;
+        }
+        
+        colInput = (String)JOptionPane.showInputDialog(null, "Please enter what coloumn you want your " + (i+1) + " checker to go", "Place Checkers", JOptionPane.PLAIN_MESSAGE, null, coloumn, coloumn[0]);
+        
+        if (colInput == null)// input was cancel (the user deciding they don't want to complete the maze) (quiting)
+        {
+          isCancelPressed = true;  //set sentinel to indicate cancel button was pressed
+          break;
+        }
+        
+        rowsNum = Integer.parseInt(rowsInput);
+        colNum = Integer.parseInt(colInput);
+        
+        for (int row = 0; row < 8; row++){
+          if (rowsNum-1!=row)
+          {
+            checkerBoard[row][colNum-1] = 0;
+          }
+          
+          for (int col = 0; col < checkerBoard[row].length; col++)
+          {
+            if (colNum-1!=col)
+            {
+              checkerBoard[rowsNum-1][col] = 0;
+            }
+          }
+        }
+        
+        checkerBoard[rowsNum-1][colNum-1] = 1;
+      }
+    }
+  }
+  public static int calculateTotalCheckerOnBoard(int[][] checkerBoard)
+  {
+    int total = 0;
+    
+    if (isCancelPressed==false) //if cancel button not pressed
+    {  
+      for (int row = 0; row < checkerBoard.length; row++)
+      {
+        for (int col = 0; col < checkerBoard[row].length; col++)
+        {
+          total += checkerBoard[row][col];
+        }
+      }
+    }
+    
+    return total;
+  }
+  public static String generatesBoardIntoOutputFormat(int[][] checkerBoard, int total)
+  {
+    String outputBoard = " Total Checkers on Board = " + total + "\n";
+    
+    if (isCancelPressed==false) //if cancel button not pressed
+    {  
+      for (int row = 0; row < checkerBoard.length; row++)
+      {
+        outputBoard += "  ";
+        for (int col = 0; col < checkerBoard[row].length; col++)
+        {
+          outputBoard += checkerBoard[row][col] + "  ";
+        }
+        
+        outputBoard += "\n";
+      }
+    }
+    
+    return outputBoard;
+  }
+  public static void outputCheckerBoard(String outputBoard)
+  {
+    if (isCancelPressed==false) //if cancel button not pressed
+    {  
+      UIManager.put("OptionPane.messageFont", new Font("monospaced", Font.PLAIN, 16));
+      JOptionPane.showMessageDialog(null,outputBoard,"",JOptionPane.INFORMATION_MESSAGE);
+    }
+  }
+}
